@@ -1,0 +1,25 @@
+{
+  "short_name": "VICAPP",
+  "name": "VICAPP — Your One-Stop Shopping Platform",
+  "icons": [
+    {
+      "src": "img/vicapp_ball_favicon.png",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "img/vicapp_ball.png",
+      "type": "image/png",
+      "sizes": "100x100"
+    },
+    {
+      "src": "img/vicapp_ball_large.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "fullscreen",
+  "theme_color": "#FF0550",
+  "background_color": "#ffffff"
+}
