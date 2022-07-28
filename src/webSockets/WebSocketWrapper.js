@@ -20,8 +20,16 @@ class WebSocketReducer extends Component {
         }
 
         if(this.props.openIsRequested) {
-            this.connectWebSocket();
-            this.props.setOpenRequestStatus(false);
+            // if one is already connected, then ignore
+            if(ws_client && ws_client.readyState === WebSocket.OPEN) {
+                // do nothing
+                console.log("already open.");
+                this.props.changeWebSocketStatus("connected");
+            }
+            else {
+                this.connectWebSocket();
+                this.props.setOpenRequestStatus(false);
+            }
         }
     }
 
