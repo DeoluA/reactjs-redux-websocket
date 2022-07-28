@@ -30,13 +30,19 @@
         dispatch( handleAll({ "returnedObj": payload }, "WEB_SOCKET_HAS_OPEN_REQUEST") );
     };
 
+
+    export const changeWebSocketStatus = payload => (dispatch) => {
+        dispatch( handleAll({ "returnedObj": payload }, "WEB_SOCKET_CURRENT_STATUS") );
+    };
+
 // reducer
     const initialState = {
         webSocketIsClosed: false,
         webSocketIncomingMessage: { timeStamp: 0 },
         webSocketIncomingMessageIsRead: false,
         closeIsRequested: false,
-        openIsRequested: false
+        openIsRequested: false,
+        currentWebSocketStatus: "disconnected"
     }
 
     export const WebSocketReducer = (state = initialState, action) => {
@@ -71,6 +77,12 @@
                 return {
                     ...state,
                     openIsRequested: action.payload.returnedObj
+                }
+
+            case "WEB_SOCKET_CURRENT_STATUS":
+                return {
+                    ...state,
+                    currentWebSocketStatus: action.payload.returnedObj
                 }
 
         }

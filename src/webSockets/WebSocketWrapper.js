@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 
-import {setWebSocketOfflineStatus, loadNewMessage, setOpenRequestStatus} from "./WebSocketHelpers";
+import {setWebSocketOfflineStatus, loadNewMessage, setOpenRequestStatus, changeWebSocketStatus} from "./WebSocketHelpers";
 
 let ws_client, ws_intervalCounter = 1;
 
@@ -29,10 +29,12 @@ class WebSocketReducer extends Component {
 
     connectWebSocket = () => {
         ws_client = new WebSocket(process.env.REACT_APP_WS_URL);
+        this.props.changeWebSocketStatus("attempting connection...");
 
         ws_client.onopen = () => {
-            // console.log('opening...');
+            console.log('opening websocket...');
             this.props.setWebSocketOfflineStatus(false);
+            this.props.changeWebSocketStatus("connected");
         };
 
         ws_client.onmessage = (incoming) => {
@@ -40,14 +42,15 @@ class WebSocketReducer extends Component {
         };
 
         ws_client.onerror = (event) => {
-            // console.log("error:", event);
+            console.log("error in websocket connection:", event);
         };
 
         // if it closes, reconnect but warn first
         ws_client.onclose = (event) => {
+            this.props.changeWebSocketStatus("disconnected");
             // ...but only if it was NOT a user requested close:
             if(!this.props.closeIsRequested) {
-                // console.log("Connection terminated. Attempting to reconnect...");
+                console.log("Websocket connection terminated. Attempting to reconnect...");
             	this.props.setWebSocketOfflineStatus(true);
                 setTimeout(() => { this.connectWebSocket() }, 1000 * ws_intervalCounter); ws_intervalCounter++;
             };
@@ -56,11 +59,12 @@ class WebSocketReducer extends Component {
     };
 
     closeWebSocket = () => {
-        // console.log("closing...");
+        console.log("closing websocket connection...");
         if(ws_client) {
             ws_client.close();
         };
         ws_client = undefined;
+        this.props.changeWebSocketStatus("disconnected");
     };
 
 
@@ -82,7 +86,8 @@ const mapStateToProps = dispatch => {
     return {
         loadNewMessage: payload => dispatch(loadNewMessage(payload)),
         setWebSocketOfflineStatus: payload => dispatch(setWebSocketOfflineStatus(payload)),
-        setOpenRequestStatus: payload => dispatch(setOpenRequestStatus(payload))
+        setOpenRequestStatus: payload => dispatch(setOpenRequestStatus(payload)),
+        changeWebSocketStatus: payload => dispatch(changeWebSocketStatus(payload))
     }
 }
 
